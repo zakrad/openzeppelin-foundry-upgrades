@@ -117,6 +117,10 @@ library DefenderDeploy {
             inputBuilder[i++] = "--maxPriorityFeePerGas";
             inputBuilder[i++] = Strings.toString(defenderOpts.txOverrides.maxPriorityFeePerGas);
         }
+        if (!(defenderOpts.metadata).toSlice().empty()) {
+            inputBuilder[i++] = "--metadata";
+            inputBuilder[i++] = string(abi.encodePacked('"', vm.replace(defenderOpts.metadata, '"', '\\"'), '"'));
+        }
 
         // Create a copy of inputs but with the correct length
         string[] memory inputs = new string[](i);
@@ -265,7 +269,7 @@ library DefenderDeploy {
         inputBuilder[i++] = "--chainId";
         inputBuilder[i++] = Strings.toString(block.chainid);
         inputBuilder[i++] = "--contractArtifactFile";
-        inputBuilder[i++] = contractInfo.artifactPath;
+        inputBuilder[i++] = string(abi.encodePacked('"', contractInfo.artifactPath, '"'));
         if (proxyAdminAddress != address(0)) {
             inputBuilder[i++] = "--proxyAdminAddress";
             inputBuilder[i++] = vm.toString(proxyAdminAddress);
